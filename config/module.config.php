@@ -40,11 +40,30 @@ return array(
                     ),
                 ),
             ),
+            'user' => array(
+                'type' => 'Literal',
+                'options' => array(
+                    'route' => '/user',
+                ),
+                'child_routes' => array(
+                    'login' => array(
+                        'type' => 'Literal',
+                        'options' => array(
+                            'route' => '/login',
+                            'defaults' => array(
+                                'controller' => __NAMESPACE__ . '\Controller\Authentication',
+                                'action' => 'login',
+                            ),
+                        ),
+                    ),
+                ),
+            ),
         ),
     ),
     'controllers' => array(
         'invokables' => array(
             __NAMESPACE__ . '\Controller\UserAdmin' => __NAMESPACE__ . '\Controller\UserAdminController',
+            __NAMESPACE__ . '\Controller\Authentication' => __NAMESPACE__ . '\Controller\AuthenticationController',
         ),
     ),
     'navigation' => array(
@@ -80,7 +99,14 @@ return array(
         'factories' => array(
             'password_hash_generator' => function (ServiceLocatorInterface $sl) {
                 return new Bcrypt();
-            }
+            },
+        ),
+        'invokables' => array(
+            'Zend\Authentication\AuthenticationService' => 'Zend\Authentication\AuthenticationService',
+            'Midnight\User\Authentication/Adapter' => 'Midnight\User\Authentication/Adapter',
+        ),
+        'aliases' => array(
+            'auth' => 'Zend\Authentication\AuthenticationService',
         ),
     ),
 );

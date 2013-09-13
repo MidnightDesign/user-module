@@ -3,8 +3,6 @@
 namespace Midnight\User\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Zend\Permissions\Acl\Role\RoleInterface;
-use ZfcUser\Entity\UserInterface;
 
 /**
  * Class User
@@ -13,7 +11,7 @@ use ZfcUser\Entity\UserInterface;
  * @ORM\Entity
  * @ORM\Table(name="users")
  */
-class User implements UserInterface, RoleInterface, \ZfcUser\Entity\UserInterface
+class User
 {
     const ROLE_USER = 'user';
     const ROLE_ADMIN = 'admin';
@@ -106,120 +104,5 @@ class User implements UserInterface, RoleInterface, \ZfcUser\Entity\UserInterfac
     public function getLabel()
     {
         return $this->getEmail();
-    }
-
-    /**
-     * Returns the string identifier of the Role
-     *
-     * @return string
-     */
-    public function getRoleId()
-    {
-        if ($this->getIsAdmin()) {
-            return self::ROLE_ADMIN;
-        }
-        return self::ROLE_USER;
-    }
-
-    /**
-     * Set id.
-     *
-     * @param int $id
-     * @throws \Exception
-     * @return UserInterface
-     */
-    public function setId($id)
-    {
-        throw new \Exception('Not implemented');
-    }
-
-    /**
-     * Get username.
-     *
-     * @throws \Exception
-     * @return string
-     */
-    public function getUsername()
-    {
-        throw new \Exception('Not implemented');
-    }
-
-    /**
-     * Set username.
-     *
-     * @param string $username
-     * @throws \Exception
-     * @return UserInterface
-     */
-    public function setUsername($username)
-    {
-        throw new \Exception('Not implemented');
-    }
-
-    /**
-     * Get displayName.
-     *
-     * @throws \Exception
-     * @return string
-     */
-    public function getDisplayName()
-    {
-        throw new \Exception('Not implemented');
-    }
-
-    /**
-     * Set displayName.
-     *
-     * @param string $displayName
-     * @throws \Exception
-     * @return UserInterface
-     */
-    public function setDisplayName($displayName)
-    {
-        throw new \Exception('Not implemented');
-    }
-
-    /**
-     * Get password.
-     *
-     * @return string password
-     */
-    public function getPassword()
-    {
-        return $this->getPasswordHash();
-    }
-
-    /**
-     * Set password.
-     *
-     * @param string $password
-     * @return UserInterface
-     */
-    public function setPassword($password)
-    {
-        $this->setPasswordHash($password);
-    }
-
-    /**
-     * Get state.
-     *
-     * @throws \Exception
-     * @return int
-     */
-    public function getState()
-    {
-        throw new \Exception('Not implemented');
-    }
-
-    /**
-     * Set state.
-     *
-     * @param int $state
-     * @throws \Exception
-     * @return UserInterface
-     */
-    public function setState($state)
-    {
-        throw new \Exception('Not implemented');
     }
 }

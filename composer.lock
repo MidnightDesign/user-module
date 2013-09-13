@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "fee79ca874c0947f020253eaa4d54b7c",
+    "hash": "0e4507ca039ed8f5385a44565165e866",
     "packages": [
         {
             "name": "bjyoungblood/bjy-authorize",
@@ -1108,6 +1108,54 @@
                 "zf2"
             ],
             "time": "2013-05-02 12:33:31"
+        },
+        {
+            "name": "zf-commons/zfc-user-doctrine-orm",
+            "version": "0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ZF-Commons/ZfcUserDoctrineORM.git",
+                "reference": "08be7b2a5e1ee31a3907582261c113531d2bf964"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ZF-Commons/ZfcUserDoctrineORM/zipball/08be7b2a5e1ee31a3907582261c113531d2bf964",
+                "reference": "08be7b2a5e1ee31a3907582261c113531d2bf964",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/doctrine-orm-module": "0.*",
+                "php": ">=5.3.3",
+                "zf-commons/zfc-user": "0.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "ZfcUserDoctrineORM": "src/"
+                },
+                "classmap": [
+                    "./"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Kyle Spraggs",
+                    "email": "theman@spiffyjr.me",
+                    "homepage": "http://www.spiffyjr.me/"
+                },
+                {
+                    "name": "Evan Coury",
+                    "email": "me@evancoury.com",
+                    "homepage": "http://blog.evan.pro/"
+                }
+            ],
+            "description": "Doctrine2 ORM storage adapter for ZfcUser.",
+            "homepage": "https://github.com/ZF-Commons/ZfcUserDoctrineORM",
+            "keywords": [
+                "zf2"
+            ],
+            "time": "2013-02-08 00:41:12"
         }
     ],
     "packages-dev": [

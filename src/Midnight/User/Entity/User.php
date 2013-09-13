@@ -3,6 +3,7 @@
 namespace Midnight\User\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Zend\Permissions\Acl\Role\RoleInterface;
 
 /**
  * Class User
@@ -11,8 +12,10 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="users")
  */
-class User implements UserInterface
+class User implements UserInterface, RoleInterface
 {
+    const ROLE_USER = 'user';
+    const ROLE_ADMIN = 'admin';
     /**
      * @var int
      *
@@ -33,6 +36,28 @@ class User implements UserInterface
      * @ORM\Column
      */
     private $password_hash;
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean")
+     */
+    private $is_admin = false;
+
+    /**
+     * @return boolean
+     */
+    public function getIsAdmin()
+    {
+        return $this->is_admin;
+    }
+
+    /**
+     * @param boolean $is_admin
+     */
+    public function setIsAdmin($is_admin)
+    {
+        $this->is_admin = $is_admin;
+    }
 
     /**
      * @return string
@@ -80,5 +105,18 @@ class User implements UserInterface
     public function getLabel()
     {
         return $this->getEmail();
+    }
+
+    /**
+     * Returns the string identifier of the Role
+     *
+     * @return string
+     */
+    public function getRoleId()
+    {
+        if ($this->getIsAdmin()) {
+            return self::ROLE_ADMIN;
+        }
+        return self::ROLE_USER;
     }
 }

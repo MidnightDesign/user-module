@@ -4,6 +4,7 @@
     "require": {
         "php": ">=5.3.3",
         "doctrine/doctrine-orm-module": "~0.7",
-        "zf-commons/zfc-admin": "~0.0.1"
+        "zf-commons/zfc-admin": "~0.0.1",
+        "bjyoungblood/bjy-authorize": "~1.4"
     }
 }

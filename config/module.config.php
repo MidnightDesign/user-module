@@ -82,6 +82,10 @@ return array(
                 'label' => 'Benutzer',
                 'route' => 'zfcadmin/user',
             ),
+            'logout' => array(
+                'label' => 'Logout',
+                'route' => 'user/logout',
+            ),
         ),
     ),
     'doctrine' => array(

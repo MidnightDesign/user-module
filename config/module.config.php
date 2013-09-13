@@ -103,7 +103,7 @@ return array(
         ),
         'invokables' => array(
             'Zend\Authentication\AuthenticationService' => 'Zend\Authentication\AuthenticationService',
-            'Midnight\User\Authentication/Adapter' => 'Midnight\User\Authentication/Adapter',
+            'Midnight\User\Authentication/Adapter' => 'Midnight\User\Authentication\Adapter',
         ),
         'aliases' => array(
             'auth' => 'Zend\Authentication\AuthenticationService',

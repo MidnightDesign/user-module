@@ -8,11 +8,16 @@ use Midnight\User\Form\LoginForm;
 use Zend\Authentication\AuthenticationService;
 use Zend\Http\PhpEnvironment\Request;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\ViewModel;
 
 class AuthenticationController extends AbstractActionController
 {
     public function loginAction()
     {
+        if($this->identity()) {
+            return $this->redirect()->toRoute('zfcadmin');
+        }
+
         $form = new LoginForm();
 
         /** @var $request Request */

@@ -56,6 +56,16 @@ return array(
                             ),
                         ),
                     ),
+                    'logout' => array(
+                        'type' => 'Literal',
+                        'options' => array(
+                            'route' => '/logout',
+                            'defaults' => array(
+                                'controller' => __NAMESPACE__ . '\Controller\Authentication',
+                                'action' => 'logout',
+                            ),
+                        ),
+                    ),
                 ),
             ),
         ),

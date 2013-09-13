@@ -14,7 +14,7 @@ class AuthenticationController extends AbstractActionController
 {
     public function loginAction()
     {
-        if($this->identity()) {
+        if ($this->identity()) {
             return $this->redirect()->toRoute('zfcadmin');
         }
 
@@ -40,6 +40,14 @@ class AuthenticationController extends AbstractActionController
         }
 
         return $this->getViewModel(array('form' => $form));
+    }
+
+    public function logoutAction()
+    {
+        /** @var $auth_service AuthenticationService */
+        $auth_service = $this->getServiceLocator()->get('auth');
+        $auth_service->clearIdentity();
+        $this->redirect()->toRoute('home');
     }
 
     private function getViewModel($variables = null)

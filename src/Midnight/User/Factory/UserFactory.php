@@ -23,6 +23,19 @@ class UserFactory implements ServiceLocatorAwareInterface
      */
     public function create($email, $password)
     {
+        $user = new User();
+        $user->setEmail($email);
+        $this->setPassword($user, $password);
+        return $user;
+    }
+
+    /**
+     * @param User $user
+     * @param string $password
+     * @throws \Exception
+     */
+    public function setPassword(User $user, $password)
+    {
         /** @var \Zend\Crypt\Password\PasswordInterface $generator */
         $generator = $this->getServiceLocator()->get('password_hash_generator');
         if (!$generator instanceof \Zend\Crypt\Password\PasswordInterface) {
@@ -31,9 +44,6 @@ class UserFactory implements ServiceLocatorAwareInterface
             ));
         }
         $password_hash = $generator->create($password);
-        $user = new User();
-        $user->setEmail($email);
         $user->setPasswordHash($password_hash);
-        return $user;
     }
 }

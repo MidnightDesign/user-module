@@ -35,6 +35,16 @@ return array(
                                     'defaults' => array('action' => 'user'),
                                     'constraints' => array('user_id' => '\d+'),
                                 ),
+                                'may_terminate' => true,
+                                'child_routes' => array(
+                                    'set_password' => array(
+                                        'type' => 'Literal',
+                                        'options' => array(
+                                            'route' => '/set-password',
+                                            'defaults' => array('action' => 'set-password'),
+                                        ),
+                                    ),
+                                ),
                             ),
                         ),
                     ),

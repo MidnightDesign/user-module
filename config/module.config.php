@@ -91,10 +91,12 @@ return array(
             __NAMESPACE__ => array(
                 'label' => 'Benutzer',
                 'route' => 'zfcadmin/user',
+                'order' => 500,
             ),
             'logout' => array(
                 'label' => 'Logout',
                 'route' => 'user/logout',
+                'order' => 9999,
             ),
         ),
     ),

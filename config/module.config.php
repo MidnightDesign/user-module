@@ -35,6 +35,16 @@ return array(
                                     'defaults' => array('action' => 'user'),
                                     'constraints' => array('user_id' => '\d+'),
                                 ),
+                                'may_terminate' => true,
+                                'child_routes' => array(
+                                    'set_password' => array(
+                                        'type' => 'Literal',
+                                        'options' => array(
+                                            'route' => '/set-password',
+                                            'defaults' => array('action' => 'set-password'),
+                                        ),
+                                    ),
+                                ),
                             ),
                         ),
                     ),
@@ -81,6 +91,12 @@ return array(
             __NAMESPACE__ => array(
                 'label' => 'Benutzer',
                 'route' => 'zfcadmin/user',
+                'order' => 500,
+            ),
+            'logout' => array(
+                'label' => 'Logout',
+                'route' => 'user/logout',
+                'order' => 9999,
             ),
         ),
     ),

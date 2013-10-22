@@ -18,7 +18,33 @@ use Zend\ServiceManager\ServiceLocatorAwareTrait;
  */
 class Adapter extends AbstractAdapter implements ServiceLocatorAwareInterface
 {
-    use ServiceLocatorAwareTrait;
+    /**
+     * @var ServiceLocatorInterface
+     */
+    protected $serviceLocator = null;
+
+    /**
+     * Get service locator
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
+    }
+
+    /**
+     * Set service locator
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     * @return mixed
+     */
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->serviceLocator = $serviceLocator;
+
+        return $this;
+    }
 
     /**
      * Performs an authentication attempt

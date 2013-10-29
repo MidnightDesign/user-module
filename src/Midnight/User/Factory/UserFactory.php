@@ -9,7 +9,10 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 
 class UserFactory implements ServiceLocatorAwareInterface
 {
-    use ServiceLocatorAwareTrait;
+    /**
+     * @var ServiceLocatorInterface
+     */
+    protected $serviceLocator = null;
 
     public function __construct(ServiceLocatorInterface $sl)
     {
@@ -45,5 +48,28 @@ class UserFactory implements ServiceLocatorAwareInterface
         }
         $password_hash = $generator->create($password);
         $user->setPasswordHash($password_hash);
+    }
+
+    /**
+     * Get service locator
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
+    }
+
+    /**
+     * Set service locator
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     * @return mixed
+     */
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->serviceLocator = $serviceLocator;
+
+        return $this;
     }
 }

@@ -8,14 +8,33 @@ use Midnight\User\Form\LoginForm;
 use Zend\Authentication\AuthenticationService;
 use Zend\Http\PhpEnvironment\Request;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Session\Container;
+use Zend\Stdlib\RequestInterface;
+use Zend\Stdlib\ResponseInterface as Response;
 use Zend\View\Model\ViewModel;
 
 class AuthenticationController extends AbstractActionController
 {
+    /**
+     * @var Container
+     */
+    private $session;
+
+    public function dispatch(RequestInterface $request, Response $response = null)
+    {
+        if ($request instanceof \Zend\Http\Request) {
+            $next = $request->getQuery('next');
+            if ($next) {
+                $this->setNext($next);
+            }
+        }
+        return parent::dispatch($request, $response);
+    }
+
     public function loginAction()
     {
         if ($this->identity()) {
-            return $this->redirect()->toRoute('zfcadmin');
+            return $this->getNextRedirect();
         }
 
         $form = new LoginForm();
@@ -34,7 +53,7 @@ class AuthenticationController extends AbstractActionController
                 $auth_adapter->setCredential($data['password']);
                 $result = $auth_service->authenticate($auth_adapter);
                 if ($result->isValid()) {
-                    return $this->redirect()->toRoute('zfcadmin');
+                    return $this->getNextRedirect();
                 }
             }
         }
@@ -63,5 +82,46 @@ class AuthenticationController extends AbstractActionController
     private function getEntityManager()
     {
         return $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
+    }
+
+    private function setNext($next)
+    {
+        $this->getSession()->next = $next;
+    }
+
+    /**
+     * @return string
+     */
+    private function getNext()
+    {
+        $next = $this->getSession()->next;
+        if (!$next) {
+            $next = $this->getDefaultNext();
+        }
+        return $next;
+    }
+
+    /**
+     * @return Container
+     */
+    private function getSession()
+    {
+        if (!$this->session) {
+            $this->session = new Container('midnight_user_auth');
+        }
+        return $this->session;
+    }
+
+    /**
+     * @return string
+     */
+    private function getDefaultNext()
+    {
+        return $this->url()->fromRoute('zfcadmin');
+    }
+
+    private function getNextRedirect()
+    {
+        return $this->redirect()->toUrl($this->getNext());
     }
 }

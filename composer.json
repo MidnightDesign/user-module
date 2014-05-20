@@ -3,12 +3,11 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=5.3.3",
-        "doctrine/doctrine-orm-module": "~0.7",
-        "zf-commons/zfc-admin": "~0.1"
+        "midnight/user": "dev-master"
     },
     "autoload": {
-        "psr-0": {
-            "Midnight\\User": "src"
+        "psr-4": {
+            "Midnight\\UserModule\\": "src"
         }
     }
 }

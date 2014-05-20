@@ -1,68 +1,23 @@
 <?php
 
-namespace Midnight\User;
-
-use Zend\Crypt\Password\Bcrypt;
-use Zend\ServiceManager\ServiceLocatorInterface;
+namespace Midnight\UserModule;
 
 return array(
     'router' => array(
         'routes' => array(
-            'zfcadmin' => array(
-                'child_routes' => array(
-                    'user' => array(
-                        'type' => 'Literal',
-                        'options' => array(
-                            'route' => '/users',
-                            'defaults' => array(
-                                'controller' => __NAMESPACE__ . '\Controller\UserAdmin',
-                                'action' => 'index',
-                            ),
-                        ),
-                        'may_terminate' => true,
-                        'child_routes' => array(
-                            'create' => array(
-                                'type' => 'Literal',
-                                'options' => array(
-                                    'route' => '/create',
-                                    'defaults' => array('action' => 'create'),
-                                ),
-                            ),
-                            'user' => array(
-                                'type' => 'Segment',
-                                'options' => array(
-                                    'route' => '/:user_id',
-                                    'defaults' => array('action' => 'user'),
-                                    'constraints' => array('user_id' => '\d+'),
-                                ),
-                                'may_terminate' => true,
-                                'child_routes' => array(
-                                    'set_password' => array(
-                                        'type' => 'Literal',
-                                        'options' => array(
-                                            'route' => '/set-password',
-                                            'defaults' => array('action' => 'set-password'),
-                                        ),
-                                    ),
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
-            ),
             'user' => array(
                 'type' => 'Literal',
                 'options' => array(
                     'route' => '/user',
                 ),
                 'child_routes' => array(
-                    'login' => array(
+                    'signup' => array(
                         'type' => 'Literal',
                         'options' => array(
-                            'route' => '/login',
+                            'route' => '/register',
                             'defaults' => array(
-                                'controller' => __NAMESPACE__ . '\Controller\Authentication',
-                                'action' => 'login',
+                                'controller' => __NAMESPACE__ . '\Authentication',
+                                'action' => 'register',
                             ),
                         ),
                     ),
@@ -71,8 +26,18 @@ return array(
                         'options' => array(
                             'route' => '/logout',
                             'defaults' => array(
-                                'controller' => __NAMESPACE__ . '\Controller\Authentication',
+                                'controller' => __NAMESPACE__ . '\Authentication',
                                 'action' => 'logout',
+                            ),
+                        ),
+                    ),
+                    'login' => array(
+                        'type' => 'Literal',
+                        'options' => array(
+                            'route' => '/login',
+                            'defaults' => array(
+                                'controller' => __NAMESPACE__ . '\Authentication',
+                                'action' => 'login',
                             ),
                         ),
                     ),
@@ -82,57 +47,70 @@ return array(
     ),
     'controllers' => array(
         'invokables' => array(
-            __NAMESPACE__ . '\Controller\UserAdmin' => __NAMESPACE__ . '\Controller\UserAdminController',
-            __NAMESPACE__ . '\Controller\Authentication' => __NAMESPACE__ . '\Controller\AuthenticationController',
+            __NAMESPACE__ . '\Authentication' => __NAMESPACE__ . '\Controller\AuthenticationController',
         ),
     ),
-    'navigation' => array(
-        'admin' => array(
-            __NAMESPACE__ => array(
-                'label' => 'Benutzer',
-                'route' => 'zfcadmin/user',
-                'order' => 500,
-            ),
-            'logout' => array(
-                'label' => 'Logout',
-                'route' => 'user/logout',
-                'order' => 9999,
-            ),
+    'service_manager' => array(
+        'invokables' => array(
+            'user.crypt' => 'Midnight\UserModule\Crypt\Bcrypt',
+            'user.login.form' => 'Midnight\UserModule\Form\LoginForm',
+            'user.signup.form' => 'Midnight\UserModule\Form\SignupForm',
+            'Zend\Authentication\AuthenticationService' => 'Zend\Authentication\AuthenticationService'
+        ),
+        'factories' => array(
+            'user.authentication.adapter' => 'Midnight\UserModule\Authentication\AdapterFactory',
+            'user.service' => 'Midnight\UserModule\Service\UserServiceFactory',
+            'user.storage' => 'Midnight\UserModule\Storage\StorageFactory',
+        ),
+    ),
+    'view_manager' => array(
+        'template_path_stack' => array(
+            dirname(__DIR__) . '/view',
         ),
     ),
     'doctrine' => array(
         'driver' => array(
             __NAMESPACE__ => array(
-                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                'class' => 'Doctrine\ORM\Mapping\Driver\XmlDriver',
                 'cache' => 'array',
                 'paths' => array(
-                    __DIR__ . '/../src/Midnight/User/Entity',
+                    dirname(__DIR__) . '/mapping/',
                 ),
             ),
             'orm_default' => array(
                 'drivers' => array(
-                    'Midnight\User\Entity' => __NAMESPACE__,
+                    'Midnight\UserModule\Entity' => __NAMESPACE__
                 ),
             ),
         ),
     ),
-    'view_manager' => array(
-        'template_path_stack' => array(
-            __DIR__ . '/../view',
+    'user' => array(
+        'post_login_route' => 'home',
+        'post_logout_route' => 'home',
+    ),
+    'navigation' => array(
+        'admin' => array(
+            'logout' => array(
+                'label' => 'Log out',
+                'route' => 'user/logout'
+            )
         ),
     ),
-    'service_manager' => array(
-        'factories' => array(
-            'password_hash_generator' => function (ServiceLocatorInterface $sl) {
-                return new Bcrypt();
-            },
+    'zfc_rbac' => array(
+        'role_provider_manager' => array(
+            'factories' => array(
+                'Midnight\UserModule\Role\RoleProvider' => 'Midnight\UserModule\Role\RoleProviderFactory'
+            ),
         ),
-        'invokables' => array(
-            'Zend\Authentication\AuthenticationService' => 'Zend\Authentication\AuthenticationService',
-            'Midnight\User\Authentication/Adapter' => 'Midnight\User\Authentication\Adapter',
+        'role_provider' => array(
+            'Midnight\UserModule\Role\RoleProvider' => array(),
         ),
-        'aliases' => array(
-            'auth' => 'Zend\Authentication\AuthenticationService',
-        ),
+        'redirect_strategy' => [
+            'redirect_when_connected' => false,
+            'redirect_to_route_connected' => '',
+            'redirect_to_route_disconnected' => 'user/login',
+            'append_previous_uri' => true,
+            'previous_uri_query_key' => 'next'
+        ],
     ),
 );

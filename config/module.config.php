@@ -97,20 +97,20 @@ return array(
         ),
     ),
     'zfc_rbac' => array(
-        'role_provider_manager' => array(
-            'factories' => array(
-                'Midnight\UserModule\Role\RoleProvider' => 'Midnight\UserModule\Role\RoleProviderFactory'
+        'role_provider' => array(
+            'ZfcRbac\Role\InMemoryRoleProvider' => array(
+                'admin' => array(
+                    'children' => array('member')
+                ),
+                'user' => array()
             ),
         ),
-        'role_provider' => array(
-            'Midnight\UserModule\Role\RoleProvider' => array(),
-        ),
-        'redirect_strategy' => [
+        'redirect_strategy' => array(
             'redirect_when_connected' => false,
             'redirect_to_route_connected' => '',
             'redirect_to_route_disconnected' => 'user/login',
             'append_previous_uri' => true,
             'previous_uri_query_key' => 'next'
-        ],
+        ),
     ),
 );

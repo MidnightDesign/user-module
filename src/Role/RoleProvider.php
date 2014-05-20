@@ -20,6 +20,5 @@ class RoleProvider implements RoleProviderInterface
         foreach($roles as $role) {
             $r[] = new Role($role);
         }
-        return $r;
     }
 }

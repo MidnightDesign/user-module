@@ -1,6 +1,6 @@
 <?php
 
-namespace Midnight\UserModule;
+namespace Midnight\User;
 
 use Zend\Crypt\Password\Bcrypt;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -106,7 +106,7 @@ return array(
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'cache' => 'array',
                 'paths' => array(
-                    __DIR__ . '/../src/Midnight/UserModule/Entity',
+                    __DIR__ . '/../src/Midnight/User/Entity',
                 ),
             ),
             'orm_default' => array(

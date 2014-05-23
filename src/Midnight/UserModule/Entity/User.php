@@ -1,12 +1,12 @@
 <?php
 
-namespace Midnight\User\Entity;
+namespace Midnight\UserModule\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class User
- * @package Midnight\User\Entity
+ * Class UserModule
+ * @package Midnight\UserModule\Entity
  *
  * @ORM\Entity
  * @ORM\Table(name="users")

@@ -1,6 +1,6 @@
 <?php
 
-namespace Midnight\User\Form;
+namespace Midnight\UserModule\Form;
 
 use Zend\InputFilter\InputFilter;
 

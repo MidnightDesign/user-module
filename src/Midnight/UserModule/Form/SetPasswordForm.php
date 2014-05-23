@@ -1,32 +1,34 @@
 <?php
 
-namespace Midnight\User\Form;
+namespace Midnight\UserModule\Form;
 
 use Zend\Form\Form;
 use Zend\Stdlib\PriorityQueue;
 
-class LoginForm extends Form
+class SetPasswordForm extends Form
 {
-    public function __construct($name = null, $options = array())
+    public function __construct()
     {
-        parent::__construct($name, $options);
+        parent::__construct();
+
+        $this->setInputFilter(new SetPasswordInputFilter());
 
         $this->add(
             array(
-                'name' => 'email',
-                'type' => 'email',
+                'name' => 'password1',
+                'type' => 'password',
                 'options' => array(
-                    'label' => 'E-Mail'
+                    'label' => 'Neues Passwort',
                 ),
             )
         );
 
         $this->add(
             array(
-                'name' => 'password',
+                'name' => 'password2',
                 'type' => 'password',
                 'options' => array(
-                    'label' => 'Passwort'
+                    'label' => 'Passwort wiederholen',
                 ),
             )
         );
@@ -36,7 +38,7 @@ class LoginForm extends Form
                 'name' => 'submit',
                 'type' => 'submit',
                 'attributes' => array(
-                    'value' => 'Login'
+                    'value' => 'Speichern',
                 ),
             )
         );

@@ -1,12 +1,12 @@
 <?php
 
-namespace Midnight\User\Controller;
+namespace Midnight\UserModule\Controller;
 
 use Doctrine\ORM\EntityManager;
-use Midnight\User\Entity\User;
-use Midnight\User\Factory\UserFactory;
-use Midnight\User\Form\CreateUserForm;
-use Midnight\User\Form\SetPasswordForm;
+use Midnight\UserModule\Entity\User;
+use Midnight\UserModule\Factory\UserFactory;
+use Midnight\UserModule\Form\CreateUserForm;
+use Midnight\UserModule\Form\SetPasswordForm;
 use Zend\Http\PhpEnvironment\Request;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;

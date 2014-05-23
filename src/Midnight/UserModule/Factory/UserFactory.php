@@ -1,8 +1,8 @@
 <?php
 
-namespace Midnight\User\Factory;
+namespace Midnight\UserModule\Factory;
 
-use Midnight\User\Entity\User;
+use Midnight\UserModule\Entity\User;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorAwareTrait;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -22,7 +22,8 @@ class UserFactory implements ServiceLocatorAwareInterface
     /**
      * @param string $email
      * @param string $password
-     * @return \Midnight\User\Entity\User
+     *
+*@return \Midnight\UserModule\Entity\User
      */
     public function create($email, $password)
     {

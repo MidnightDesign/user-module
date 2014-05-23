@@ -1,10 +1,10 @@
 <?php
 
-namespace Midnight\User\Controller;
+namespace Midnight\UserModule\Controller;
 
 use Doctrine\ORM\EntityManager;
-use Midnight\User\Authentication\Adapter;
-use Midnight\User\Form\LoginForm;
+use Midnight\UserModule\Authentication\Adapter;
+use Midnight\UserModule\Form\LoginForm;
 use Zend\Authentication\AuthenticationService;
 use Zend\Http\PhpEnvironment\Request;
 use Zend\Mvc\Controller\AbstractActionController;

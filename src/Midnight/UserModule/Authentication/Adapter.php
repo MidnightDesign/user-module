@@ -1,9 +1,9 @@
 <?php
 
-namespace Midnight\User\Authentication;
+namespace Midnight\UserModule\Authentication;
 
 use Doctrine\ORM\EntityManager;
-use Midnight\User\Entity\User;
+use Midnight\UserModule\Entity\User;
 use Zend\Authentication\Adapter\AbstractAdapter;
 use Zend\Authentication\Result;
 use Zend\Crypt\Password\Bcrypt;
@@ -12,9 +12,9 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Class Adapter
- * @package Midnight\User\Authentication
+ * @package Midnight\UserModule\Authentication
  *
- * @method \Midnight\User\Entity\User getIdentity() getIdentity()
+ * @method \Midnight\UserModule\Entity\User getIdentity() getIdentity()
  */
 class Adapter extends AbstractAdapter implements ServiceLocatorAwareInterface
 {

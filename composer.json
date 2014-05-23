@@ -3,7 +3,8 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=5.3.3",
-        "midnight/user": "dev-master"
+        "midnight/user": "dev-master",
+        "doctrine/doctrine-orm-module": "~0.8"
     },
     "autoload": {
         "psr-4": {

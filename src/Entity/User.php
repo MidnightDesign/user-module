@@ -13,7 +13,7 @@ class User extends \Midnight\User\Entity\User implements IdentityInterface
     /**
      * @var boolean
      */
-    protected $isAdmin;
+    protected $isAdmin = false;
 
     /**
      * Get the list of roles of this identity

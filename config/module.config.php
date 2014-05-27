@@ -43,11 +43,26 @@ return array(
                     ),
                 ),
             ),
+            'zfcadmin' => array(
+                'child_routes' => array(
+                    'user' => array(
+                        'type' => 'Literal',
+                        'options' => array(
+                            'route' => '/users',
+                            'defaults' => array(
+                                'controller' => __NAMESPACE__ . '\\UserAdmin',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
+                ),
+            ),
         ),
     ),
     'controllers' => array(
         'invokables' => array(
             __NAMESPACE__ . '\Authentication' => __NAMESPACE__ . '\Controller\AuthenticationController',
+            __NAMESPACE__ . '\UserAdmin' => __NAMESPACE__ . '\Controller\UserAdminController',
         ),
     ),
     'service_manager' => array(
@@ -90,6 +105,10 @@ return array(
     ),
     'navigation' => array(
         'admin' => array(
+            'users' => array(
+                'label' => 'Users',
+                'route' => 'zfcadmin/user'
+            ),
             'logout' => array(
                 'label' => 'Log out',
                 'route' => 'user/logout'

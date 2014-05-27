@@ -1,0 +1,21 @@
+<?php
+/**
+ * @var \Zend\View\Renderer\PhpRenderer       $this
+ * @var \Midnight\User\Entity\UserInterface[] $users
+ */
+?>
+<h1><?= $this->translate('Users') ?></h1>
+<table>
+    <thead>
+    <tr>
+        <th><?= $this->translate('Email') ?></th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($users as $user): ?>
+        <tr>
+            <td><?= $user->getIdentity() ?></td>
+        </tr>
+    <?php endforeach ?>
+    </tbody>
+</table>

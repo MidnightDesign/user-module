@@ -1,0 +1,12 @@
+<?php
+/**
+ * @var \Zend\View\Renderer\PhpRenderer           $this
+ * @var \Midnight\UserModule\Entity\User          $user
+ * @var \Midnight\UserModule\Form\SetPasswordForm $passwordForm
+ */
+$passwordForm->setAttribute('class', $passwordForm->getAttribute('class') . ' labels-top');
+$passwordForm->prepare();
+?>
+<h1><?= $user->getIdentity() ?></h1>
+<h2><?= $this->translate('Change password') ?></h2>
+<?= $this->adminForm($passwordForm) ?>

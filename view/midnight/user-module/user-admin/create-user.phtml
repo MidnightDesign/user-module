@@ -1,0 +1,10 @@
+<?php
+/**
+ * @var \Zend\View\Renderer\PhpRenderer    $this
+ * @var \Midnight\UserModule\Form\UserForm $form
+ */
+$form->setAttribute('class', $form->getAttribute('class') . ' labels-top');
+$form->prepare();
+?>
+<h1><?= $this->translate('New user') ?></h1>
+<?= $this->adminForm($form) ?>

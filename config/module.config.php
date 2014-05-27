@@ -54,6 +54,32 @@ return array(
                                 'action' => 'index',
                             ),
                         ),
+                        'may_terminate' => true,
+                        'child_routes' => array(
+                            'edit' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/:identity/edit',
+                                    'defaults' => array(
+                                        'action' => 'edit-user',
+                                    ),
+                                ),
+                            ),
+                            'set_password' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/:identity/set-password',
+                                    'defaults' => array('action' => 'set-password'),
+                                ),
+                            ),
+                            'create_user' => array(
+                                'type' => 'Literal',
+                                'options' => array(
+                                    'route' => '/create-user',
+                                    'defaults' => array('action' => 'create-user'),
+                                ),
+                            ),
+                        ),
                     ),
                 ),
             ),

@@ -3,8 +3,8 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=5.3.3",
-        "doctrine/doctrine-orm-module": "~0.7",
-        "zf-commons/zfc-admin": "~0.1",
+        "midnight/user": "~1.1",
+        "doctrine/doctrine-orm-module": "~0.8",
         "zf-commons/zfc-rbac": "~2.3"
     },
     "autoload": {

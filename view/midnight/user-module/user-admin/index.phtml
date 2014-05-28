@@ -1,0 +1,40 @@
+<?php
+/**
+ * @var \Zend\View\Renderer\PhpRenderer    $this
+ * @var \Midnight\UserModule\Entity\User[] $users
+ */
+?>
+<h1><?= $this->translate('Users') ?></h1>
+<ul class="page-options">
+    <li>
+        <a href="<?= $this->url('zfcadmin/user/create_user') ?>">
+            <?= $this->translate('Create new user') ?>
+        </a>
+    </li>
+</ul>
+<table>
+    <thead>
+    <tr>
+        <th><?= $this->translate('Email') ?></th>
+        <th><?= $this->translate('Admin') ?></th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($users as $user): ?>
+        <tr>
+            <td>
+                <a href="<?= $this->url('zfcadmin/user/edit', array('identity' => $user->getIdentity())) ?>">
+                    <?= $user->getIdentity() ?>
+                </a>
+            </td>
+            <td>
+                <?php if ($user->isAdmin()): ?>
+                    <?= $this->translate('Yes') ?>
+                <?php else: ?>
+                    <?= $this->translate('No') ?>
+                <?php endif ?>
+            </td>
+        </tr>
+    <?php endforeach ?>
+    </tbody>
+</table>

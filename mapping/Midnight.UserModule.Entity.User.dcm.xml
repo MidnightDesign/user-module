@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                    http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Midnight\UserModule\Entity\User" table="users">
+        <id type="integer" name="id">
+            <generator strategy="AUTO"/>
+        </id>
+        <field name="identity" column="email" nullable="false" unique="true"/>
+        <field name="credential" column="password" nullable="false"/>
+        <field name="isAdmin" column="is_admin" nullable="false" type="boolean"/>
+    </entity>
+</doctrine-mapping>

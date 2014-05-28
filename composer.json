@@ -8,8 +8,8 @@
         "zf-commons/zfc-rbac": "~2.3"
     },
     "autoload": {
-        "psr-0": {
-            "Midnight\\User": "src"
+        "psr-4": {
+            "Midnight\\UserModule\\": "src"
         }
     }
 }

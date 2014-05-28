@@ -2,126 +2,147 @@
 
 namespace Midnight\UserModule\Controller;
 
-use Doctrine\ORM\EntityManager;
+use Midnight\User\Service\UserServiceInterface;
 use Midnight\UserModule\Authentication\Adapter;
-use Midnight\UserModule\Form\LoginForm;
-use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\AuthenticationServiceInterface;
+use Zend\Form\FormInterface;
 use Zend\Http\PhpEnvironment\Request;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Session\Container;
-use Zend\Stdlib\RequestInterface;
-use Zend\Stdlib\ResponseInterface as Response;
 use Zend\View\Model\ViewModel;
 
+/**
+ * Class AuthenticationController
+ * @package Midnight\UserModule\Controller
+ *
+ * @method Request getRequest()
+ */
 class AuthenticationController extends AbstractActionController
 {
-    /**
-     * @var Container
-     */
-    private $session;
-
-    public function dispatch(RequestInterface $request, Response $response = null)
+    public function registerAction()
     {
-        if ($request instanceof \Zend\Http\Request) {
-            $next = $request->getQuery('next');
-            if ($next) {
-                $this->setNext($next);
+        $form = $this->getSignupForm();
+
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $form->setData($request->getPost());
+            if ($form->isValid()) {
+                $data = $form->getData(FormInterface::VALUES_AS_ARRAY);
+                $identity = $data['email'];
+                $credential = $data['password'];
+                $this->getUserService()->register($identity, $credential);
+                $adapter = $this->getAuthenticationAdapter();
+                $adapter->setIdentity($identity);
+                $adapter->setCredential($credential);
+                $result = $this->getAuthenticationService()->authenticate($adapter);
+                if (!$result->isValid()) {
+                    throw new \Exception(sprintf(
+                        'User was created, but couldn\'t log in. (%s)',
+                        $result->getCode()
+                    ));
+                }
+                return $this->redirect()->toRoute($this->getPostLoginRoute());
             }
         }
-        return parent::dispatch($request, $response);
+
+        $vm = new ViewModel(array('form' => $form));
+        $vm->setTemplate('midnight/user-module/authentication/register.phtml');
+        return $vm;
     }
 
     public function loginAction()
     {
-        if ($this->identity()) {
-            return $this->getNextRedirect();
+        $form = $this->getLoginForm();
+
+        $next = $this->params()->fromQuery('next');
+        if ($next) {
+            $form->get('next')->setValue($next);
         }
 
-        $form = new LoginForm();
-
-        /** @var $request Request */
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $data = $request->getPost();
-            $form->setData($data);
+            $form->setData($request->getPost());
             if ($form->isValid()) {
-                /** @var $auth_service AuthenticationService */
-                $auth_service = $this->getServiceLocator()->get('auth');
-                /** @var $auth_adapter Adapter */
-                $auth_adapter = $this->getServiceLocator()->get('Midnight\User\Authentication\Adapter');
-                $auth_adapter->setIdentity($data['email']);
-                $auth_adapter->setCredential($data['password']);
-                $result = $auth_service->authenticate($auth_adapter);
+                $data = $form->getData(FormInterface::VALUES_AS_ARRAY);
+                $adapter = $this->getAuthenticationAdapter();
+                $adapter->setIdentity($data['email']);
+                $adapter->setCredential($data['password']);
+                $result = $this->getAuthenticationService()->authenticate($adapter);
                 if ($result->isValid()) {
-                    return $this->getNextRedirect();
+                    if (!empty($data['next'])) {
+                        return $this->redirect()->toUrl($data['next']);
+                    } else {
+                        return $this->redirect()->toRoute($this->getPostLoginRoute());
+                    }
                 }
             }
         }
 
-        return $this->getViewModel(array('form' => $form));
+        $vm = new ViewModel(array('form' => $form));
+        $vm->setTemplate('midnight/user-module/authentication/login.phtml');
+        return $vm;
     }
 
     public function logoutAction()
     {
-        /** @var $auth_service AuthenticationService */
-        $auth_service = $this->getServiceLocator()->get('auth');
-        $auth_service->clearIdentity();
-        $this->redirect()->toRoute('home');
-    }
-
-    private function getViewModel($variables = null)
-    {
-        $vm = new ViewModel($variables);
-        $vm->setTemplate('user/authentication/' . $this->params()->fromRoute('action') . '.phtml');
-        return $vm;
+        $auth = $this->getAuthenticationService();
+        if ($auth->hasIdentity()) {
+            $auth->clearIdentity();
+        }
+        return $this->redirect()->toRoute($this->getPostLogoutRoute());
     }
 
     /**
-     * @return EntityManager
+     * @return FormInterface
      */
-    private function getEntityManager()
+    private function getSignupForm()
     {
-        return $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
+        return $this->getServiceLocator()->get('user.signup.form');
     }
 
-    private function setNext($next)
+    /**
+     * @return FormInterface
+     */
+    private function getLoginForm()
     {
-        $this->getSession()->next = $next;
+        return $this->getServiceLocator()->get('user.login.form');
+    }
+
+    /**
+     * @return UserServiceInterface
+     */
+    private function getUserService()
+    {
+        return $this->getServiceLocator()->get('user.service');
+    }
+
+    /**
+     * @return AuthenticationServiceInterface
+     */
+    private function getAuthenticationService()
+    {
+        return $this->getServiceLocator()->get('Zend\Authentication\AuthenticationService');
+    }
+
+    /**
+     * @return Adapter
+     */
+    private function getAuthenticationAdapter()
+    {
+        return $this->getServiceLocator()->get('user.authentication.adapter');
     }
 
     /**
      * @return string
      */
-    private function getNext()
+    private function getPostLoginRoute()
     {
-        $next = $this->getSession()->next;
-        if (!$next) {
-            $next = $this->getDefaultNext();
-        }
-        return $next;
+        $config = $this->getServiceLocator()->get('Config');
+        return $config['user']['post_login_route'];
     }
 
-    /**
-     * @return Container
-     */
-    private function getSession()
+    private function getPostLogoutRoute()
     {
-        if (!$this->session) {
-            $this->session = new Container('midnight_user_auth');
-        }
-        return $this->session;
+        $config = $this->getServiceLocator()->get('Config');
+        return $config['user']['post_logout_route'];
     }
-
-    /**
-     * @return string
-     */
-    private function getDefaultNext()
-    {
-        return $this->url()->fromRoute('zfcadmin');
-    }
-
-    private function getNextRedirect()
-    {
-        return $this->redirect()->toUrl($this->getNext());
-    }
-}
+} 

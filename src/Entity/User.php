@@ -2,107 +2,38 @@
 
 namespace Midnight\UserModule\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
+use ZfcRbac\Identity\IdentityInterface;
 
-/**
- * Class UserModule
- * @package Midnight\UserModule\Entity
- *
- * @ORM\Entity
- * @ORM\Table(name="users")
- */
-class User
+class User extends \Midnight\User\Entity\User implements IdentityInterface
 {
-    const ROLE_USER = 'user';
-    const ROLE_ADMIN = 'admin';
-    /**
-     * @var int
-     *
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue
-     */
-    private $id;
     /**
      * @var string
-     *
-     * @ORM\Column
      */
-    private $email;
+    protected $id;
     /**
-     * @var string
-     *
-     * @ORM\Column
+     * @var boolean
      */
-    private $password_hash;
+    protected $isAdmin = false;
+
     /**
-     * @var bool
+     * Get the list of roles of this identity
      *
-     * @ORM\Column(type="boolean")
+     * @return string[]|\Rbac\Role\RoleInterface[]
      */
-    private $is_admin = false;
+    public function getRoles()
+    {
+        $roles = array('user');
+        if ($this->isAdmin) {
+            $roles[] = 'admin';
+        }
+        return $roles;
+    }
 
     /**
      * @return boolean
      */
-    public function getIsAdmin()
+    public function isAdmin()
     {
-        return $this->is_admin;
-    }
-
-    /**
-     * @param boolean $is_admin
-     */
-    public function setIsAdmin($is_admin)
-    {
-        $this->is_admin = $is_admin;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    /**
-     * @param string $email
-     */
-    public function setEmail($email)
-    {
-        $this->email = $email;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPasswordHash()
-    {
-        return $this->password_hash;
-    }
-
-    /**
-     * @param string $password_hash
-     */
-    public function setPasswordHash($password_hash)
-    {
-        $this->password_hash = $password_hash;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLabel()
-    {
-        return $this->getEmail();
+        return $this->isAdmin;
     }
 }

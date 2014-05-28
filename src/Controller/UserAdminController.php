@@ -3,6 +3,8 @@
 namespace Midnight\UserModule\Controller;
 
 use Doctrine\ORM\EntityManager;
+use Midnight\User\Service\UserServiceInterface;
+use Midnight\User\Storage\StorageInterface;
 use Midnight\UserModule\Entity\User;
 use Midnight\UserModule\Factory\UserFactory;
 use Midnight\UserModule\Form\CreateUserForm;
@@ -15,11 +17,11 @@ class UserAdminController extends AbstractActionController
 {
     public function indexAction()
     {
-        $users = $this->getEntityManager()->getRepository('Midnight\User\Entity\User')->findAll();
+        $users = $this->getEntityManager()->getRepository('Midnight\UserModule\Entity\User')->findAll();
         return $this->getViewModel(array('users' => $users));
     }
 
-    public function createAction()
+    public function createUserAction()
     {
         $form = new CreateUserForm();
 
@@ -29,8 +31,7 @@ class UserAdminController extends AbstractActionController
             $data = $request->getPost();
             $form->setData($data);
             if ($form->isValid()) {
-                $factory = new UserFactory($this->getServiceLocator());
-                $user = $factory->create($data['email'], $data['password']);
+                $user = $this->getUserService()->register($data['email'], $data['password']);
                 $em = $this->getEntityManager();
                 $em->persist($user);
                 $em->flush();
@@ -42,10 +43,11 @@ class UserAdminController extends AbstractActionController
         return $this->getViewModel(array('form' => $form));
     }
 
-    public function userAction()
+    public function editUserAction()
     {
+        $passwordForm = new SetPasswordForm();
         $user = $this->getUser();
-        return $this->getViewModel(array('user' => $user));
+        return $this->getViewModel(array('passwordForm' => $passwordForm, 'user' => $user));
     }
 
     public function setPasswordAction()
@@ -81,13 +83,14 @@ class UserAdminController extends AbstractActionController
      */
     private function getUser()
     {
-        return $this->getEntityManager()->find('Midnight\User\Entity\User', $this->params()->fromRoute('user_id'));
+        $identity = $this->params()->fromRoute('identity');
+        return $this->getUserStorage()->loadByIdentity($identity);
     }
 
     private function getViewModel($variables = null)
     {
         $vm = new ViewModel($variables);
-        $vm->setTemplate('user/user-admin/' . $this->params()->fromRoute('action') . '.phtml');
+        $vm->setTemplate('midnight/user-module/user-admin/' . $this->params()->fromRoute('action') . '.phtml');
         return $vm;
     }
 
@@ -97,5 +100,21 @@ class UserAdminController extends AbstractActionController
     private function getEntityManager()
     {
         return $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
+    }
+
+    /**
+     * @return StorageInterface
+     */
+    private function getUserStorage()
+    {
+        return $this->getServiceLocator()->get('user.storage');
+    }
+
+    /**
+     * @return UserServiceInterface
+     */
+    private function getUserService()
+    {
+        return $this->getServiceLocator()->get('user.service');
     }
 }

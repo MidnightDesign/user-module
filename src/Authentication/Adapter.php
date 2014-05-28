@@ -2,80 +2,76 @@
 
 namespace Midnight\UserModule\Authentication;
 
-use Doctrine\ORM\EntityManager;
-use Midnight\UserModule\Entity\User;
-use Zend\Authentication\Adapter\AbstractAdapter;
+use Midnight\User\Service\CryptoServiceInterface;
+use Midnight\User\Storage\StorageInterface;
+use Zend\Authentication\Adapter\AdapterInterface;
 use Zend\Authentication\Result;
-use Zend\Crypt\Password\Bcrypt;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
-/**
- * Class Adapter
- * @package Midnight\UserModule\Authentication
- *
- * @method \Midnight\UserModule\Entity\User getIdentity() getIdentity()
- */
-class Adapter extends AbstractAdapter implements ServiceLocatorAwareInterface
+class Adapter implements AdapterInterface
 {
     /**
-     * @var ServiceLocatorInterface
+     * @var string
      */
-    protected $serviceLocator = null;
+    private $identity;
+    /**
+     * @var string
+     */
+    private $credential;
+    /**
+     * @var StorageInterface
+     */
+    private $storage;
+    /**
+     * @var CryptoServiceInterface
+     */
+    private $crypt;
 
     /**
-     * Performs an authentication attempt
-     *
      * @return \Zend\Authentication\Result
      * @throws \Zend\Authentication\Adapter\Exception\ExceptionInterface If authentication cannot be performed
      */
     public function authenticate()
     {
-        $user = $this->getUser();
+        $email = $this->identity;
+        $user = $this->storage->loadByIdentity($email);
         if (!$user) {
-            return new Result(Result::FAILURE_IDENTITY_NOT_FOUND, $this->getIdentity());
+            return new Result(Result::FAILURE_IDENTITY_NOT_FOUND, $email);
         }
-        $password = $this->getCredential();
-        /** @var $hash_generator Bcrypt */
-        $hash_generator = $this->getServiceLocator()->get('password_hash_generator');
-        if (!$hash_generator->verify($password, $user->getPasswordHash())) {
-            return new Result(Result::FAILURE_CREDENTIAL_INVALID, $this->getIdentity());
+        if (!$this->crypt->verify($this->credential, $user->getCredential())) {
+            return new Result(Result::FAILURE_CREDENTIAL_INVALID, $user);
         }
         return new Result(Result::SUCCESS, $user);
     }
 
     /**
-     * @return User|null
+     * @param StorageInterface $storage
      */
-    private function getUser()
+    public function setStorage(StorageInterface $storage)
     {
-        /** @var $em EntityManager */
-        $em = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
-        /** @var $user User */
-        $user = $em->getRepository('Midnight\User\Entity\User')->findOneBy(array('email' => $this->getIdentity()));
-        return $user;
+        $this->storage = $storage;
     }
 
     /**
-     * Get service locator
-     *
-     * @return ServiceLocatorInterface
+     * @param CryptoServiceInterface $crypt
      */
-    public function getServiceLocator()
+    public function setCrypt(CryptoServiceInterface $crypt)
     {
-        return $this->serviceLocator;
+        $this->crypt = $crypt;
     }
 
     /**
-     * Set service locator
-     *
-     * @param ServiceLocatorInterface $serviceLocator
-     * @return mixed
+     * @param string $identity
      */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    public function setIdentity($identity)
     {
-        $this->serviceLocator = $serviceLocator;
+        $this->identity = $identity;
+    }
 
-        return $this;
+    /**
+     * @param string $credential
+     */
+    public function setCredential($credential)
+    {
+        $this->credential = $credential;
     }
 }

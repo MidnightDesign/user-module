@@ -3,6 +3,9 @@
 namespace Midnight\User\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Rbac\Role\RoleInterface;
+use string;
+use ZfcRbac\Identity\IdentityInterface;
 
 /**
  * Class User
@@ -11,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="users")
  */
-class User
+class User implements IdentityInterface
 {
     const ROLE_USER = 'user';
     const ROLE_ADMIN = 'admin';
@@ -104,5 +107,18 @@ class User
     public function getLabel()
     {
         return $this->getEmail();
+    }
+
+    /**
+     * Get the list of roles of this identity
+     *
+     * @return string[]|RoleInterface[]
+     */
+    public function getRoles()
+    {
+        if ($this->getIsAdmin()) {
+            return ['admin'];
+        }
+        return ['user'];
     }
 }

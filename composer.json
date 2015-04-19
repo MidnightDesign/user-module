@@ -2,8 +2,8 @@
     "name": "midnight/user-module",
     "minimum-stability": "stable",
     "require": {
-        "php": ">=5.3.3",
-        "midnight/user": "~1.1",
+        "php": "~5.5",
+        "midnight/user": ">=1.2.1",
         "doctrine/doctrine-orm-module": "~0.8",
         "zf-commons/zfc-rbac": "~2.3"
     },

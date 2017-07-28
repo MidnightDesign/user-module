@@ -12,21 +12,24 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Class Adapter
+ *
  * @package Midnight\User\Authentication
  *
- * @method \Midnight\User\Entity\User getIdentity() getIdentity()
+ * @method User getIdentity() getIdentity()
  */
 class Adapter extends AbstractAdapter implements ServiceLocatorAwareInterface
 {
     /**
      * @var ServiceLocatorInterface
      */
-    protected $serviceLocator = null;
+    protected $serviceLocator;
 
     /**
      * Performs an authentication attempt
      *
      * @return \Zend\Authentication\Result
+     * @throws \Zend\ServiceManager\Exception\ServiceNotFoundException
+     * @throws \Zend\Crypt\Password\Exception\RuntimeException
      * @throws \Zend\Authentication\Adapter\Exception\ExceptionInterface If authentication cannot be performed
      */
     public function authenticate()
@@ -46,13 +49,14 @@ class Adapter extends AbstractAdapter implements ServiceLocatorAwareInterface
 
     /**
      * @return User|null
+     * @throws \Zend\ServiceManager\Exception\ServiceNotFoundException
      */
     private function getUser()
     {
         /** @var $em EntityManager */
         $em = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
         /** @var $user User */
-        $user = $em->getRepository('Midnight\User\Entity\User')->findOneBy(array('email' => $this->getIdentity()));
+        $user = $em->getRepository(User::class)->findOneBy(['email' => $this->getIdentity()]);
         return $user;
     }
 

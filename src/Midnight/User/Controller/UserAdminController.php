@@ -15,8 +15,8 @@ class UserAdminController extends AbstractActionController
 {
     public function indexAction()
     {
-        $users = $this->getEntityManager()->getRepository('Midnight\User\Entity\User')->findAll();
-        return $this->getViewModel(array('users' => $users));
+        $users = $this->getEntityManager()->getRepository(User::class)->findAll();
+        return $this->getViewModel(['users' => $users]);
     }
 
     public function createAction()
@@ -39,13 +39,13 @@ class UserAdminController extends AbstractActionController
             }
         }
 
-        return $this->getViewModel(array('form' => $form));
+        return $this->getViewModel(['form' => $form]);
     }
 
     public function userAction()
     {
         $user = $this->getUser();
-        return $this->getViewModel(array('user' => $user));
+        return $this->getViewModel(['user' => $user]);
     }
 
     public function setPasswordAction()
@@ -64,24 +64,30 @@ class UserAdminController extends AbstractActionController
                 $em->persist($user);
                 $em->flush();
                 $this->flashMessenger()->addMessage('Neues Passwort gesetzt.');
-                return $this->redirect()->toRoute('zfcadmin/user/user', array('user_id' => $user->getId()));
+                return $this->redirect()->toRoute('zfcadmin/user/user', ['user_id' => $user->getId()]);
             }
         }
 
         return $this->getViewModel(
-            array(
+            [
                 'user' => $user,
                 'form' => $form,
-            )
+            ]
         );
     }
 
     /**
      * @return User
+     * @throws \Zend\ServiceManager\Exception\ServiceNotFoundException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\ORMInvalidArgumentException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Zend\Mvc\Exception\RuntimeException
      */
     private function getUser()
     {
-        return $this->getEntityManager()->find('Midnight\User\Entity\User', $this->params()->fromRoute('user_id'));
+        return $this->getEntityManager()->find(User::class, $this->params()->fromRoute('user_id'));
     }
 
     private function getViewModel($variables = null)
@@ -93,6 +99,7 @@ class UserAdminController extends AbstractActionController
 
     /**
      * @return EntityManager
+     * @throws \Zend\ServiceManager\Exception\ServiceNotFoundException
      */
     private function getEntityManager()
     {

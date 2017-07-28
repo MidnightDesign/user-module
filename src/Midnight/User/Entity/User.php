@@ -4,11 +4,11 @@ namespace Midnight\User\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Rbac\Role\RoleInterface;
-use string;
 use ZfcRbac\Identity\IdentityInterface;
 
 /**
  * Class User
+ *
  * @package Midnight\User\Entity
  *
  * @ORM\Entity

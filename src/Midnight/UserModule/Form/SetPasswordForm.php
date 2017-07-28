@@ -3,7 +3,6 @@
 namespace Midnight\UserModule\Form;
 
 use Zend\Form\Form;
-use Zend\Stdlib\PriorityQueue;
 
 class SetPasswordForm extends Form
 {
@@ -14,33 +13,33 @@ class SetPasswordForm extends Form
         $this->setInputFilter(new SetPasswordInputFilter());
 
         $this->add(
-            array(
+            [
                 'name' => 'password1',
                 'type' => 'password',
-                'options' => array(
+                'options' => [
                     'label' => 'Neues Passwort',
-                ),
-            )
+                ],
+            ]
         );
 
         $this->add(
-            array(
+            [
                 'name' => 'password2',
                 'type' => 'password',
-                'options' => array(
+                'options' => [
                     'label' => 'Passwort wiederholen',
-                ),
-            )
+                ],
+            ]
         );
 
         $this->add(
-            array(
+            [
                 'name' => 'submit',
                 'type' => 'submit',
-                'attributes' => array(
+                'attributes' => [
                     'value' => 'Speichern',
-                ),
-            )
+                ],
+            ]
         );
     }
 }

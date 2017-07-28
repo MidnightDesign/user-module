@@ -3,42 +3,41 @@
 namespace Midnight\User\Form;
 
 use Zend\Form\Form;
-use Zend\Stdlib\PriorityQueue;
 
 class LoginForm extends Form
 {
-    public function __construct($name = null, $options = array())
+    public function __construct($name = null, $options = [])
     {
         parent::__construct($name, $options);
 
         $this->add(
-            array(
+            [
                 'name' => 'email',
                 'type' => 'email',
-                'options' => array(
-                    'label' => 'E-Mail'
-                ),
-            )
+                'options' => [
+                    'label' => 'E-Mail',
+                ],
+            ]
         );
 
         $this->add(
-            array(
+            [
                 'name' => 'password',
                 'type' => 'password',
-                'options' => array(
-                    'label' => 'Passwort'
-                ),
-            )
+                'options' => [
+                    'label' => 'Passwort',
+                ],
+            ]
         );
 
         $this->add(
-            array(
+            [
                 'name' => 'submit',
                 'type' => 'submit',
-                'attributes' => array(
-                    'value' => 'Login'
-                ),
-            )
+                'attributes' => [
+                    'value' => 'Login',
+                ],
+            ]
         );
     }
 }

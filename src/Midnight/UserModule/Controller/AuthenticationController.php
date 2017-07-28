@@ -2,7 +2,6 @@
 
 namespace Midnight\UserModule\Controller;
 
-use Doctrine\ORM\EntityManager;
 use Midnight\UserModule\Authentication\Adapter;
 use Midnight\UserModule\Form\LoginForm;
 use Zend\Authentication\AuthenticationService;
@@ -48,7 +47,7 @@ class AuthenticationController extends AbstractActionController
                 /** @var $auth_service AuthenticationService */
                 $auth_service = $this->getServiceLocator()->get('auth');
                 /** @var $auth_adapter Adapter */
-                $auth_adapter = $this->getServiceLocator()->get('Midnight\User\Authentication\Adapter');
+                $auth_adapter = $this->getServiceLocator()->get(\Midnight\User\Authentication\Adapter::class);
                 $auth_adapter->setIdentity($data['email']);
                 $auth_adapter->setCredential($data['password']);
                 $result = $auth_service->authenticate($auth_adapter);
@@ -58,7 +57,7 @@ class AuthenticationController extends AbstractActionController
             }
         }
 
-        return $this->getViewModel(array('form' => $form));
+        return $this->getViewModel(['form' => $form]);
     }
 
     public function logoutAction()
@@ -76,14 +75,6 @@ class AuthenticationController extends AbstractActionController
         return $vm;
     }
 
-    /**
-     * @return EntityManager
-     */
-    private function getEntityManager()
-    {
-        return $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
-    }
-
     private function setNext($next)
     {
         $this->getSession()->next = $next;
@@ -91,6 +82,10 @@ class AuthenticationController extends AbstractActionController
 
     /**
      * @return string
+     * @throws \Zend\Session\Exception\InvalidArgumentException
+     * @throws \Zend\Mvc\Exception\RuntimeException
+     * @throws \Zend\Mvc\Exception\InvalidArgumentException
+     * @throws \Zend\Mvc\Exception\DomainException
      */
     private function getNext()
     {
@@ -103,6 +98,7 @@ class AuthenticationController extends AbstractActionController
 
     /**
      * @return Container
+     * @throws \Zend\Session\Exception\InvalidArgumentException
      */
     private function getSession()
     {
@@ -114,6 +110,9 @@ class AuthenticationController extends AbstractActionController
 
     /**
      * @return string
+     * @throws \Zend\Mvc\Exception\RuntimeException
+     * @throws \Zend\Mvc\Exception\InvalidArgumentException
+     * @throws \Zend\Mvc\Exception\DomainException
      */
     private function getDefaultNext()
     {

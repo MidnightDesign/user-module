@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Class UserModule
+ *
  * @package Midnight\UserModule\Entity
  *
  * @ORM\Entity
